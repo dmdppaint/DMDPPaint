@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<body background="images/vv1.jpeg">
+<h1><h1 style="text-align:center;"><font face="comic sans ms" color=#66FF33><i><b>DMDP PAINT APP</i></b></h1>
+<html lang="en">
+<head>
+
+<style type="text/css">
+body
+{
+background-image:url('paint3.jpg'); /* Image sourced from: http://www.yoanu.com/17-paint-splatter-wallpaper-hd-photos-collections*/
+}
+      #paint:active {
+             cursor: pointer;
+      }
+      #paint {
+             cursor: crosshair;
+      }
+      .menu{display:block;width:40px;height:40px;border-radius:25px;background:#000 }
+      .menu1{display:block;width:35px;height:35px;border-radius:25px;background:#000}
+      .menu2{display:block;width:28px;height:28px;border-radius:25px;background:#000}
+      
+	  form {
+  	   width: 10em;
+       height:30em;
+  	   padding: 1em;
+  	   margin: 0 auto;
+       text-align: center;
+	   color: black;
+       /*background-color: silver;*/
+	   background-color: #66FF33;
+ 	   border: solid gray 2px;
+	   border-bottom-left-radius:1em;
+	   border-bottom-right-radius:5em;
+	   border-top-right-radius:1em;
+	   border-top-left-radius:1em;
+	}
+	.pencil {
+  	     background-color: white;
+	     color: black;
+	}
+        .rectangle {
+  	     background-color: white;
+	     color: black;
+	}
+        .violet {
+  	     background-color: violet;
+	     color: white;
+	}
+ 	.indigo {
+  	     background-color: indigo;
+	     color: white;
+	}
+        .blue {
+             background-color: blue;
+             color: white;
+        }
+	.green {
+  	     background-color: green;
+	     color: white;
+	}
+	.yellow {
+  	     background-color: yellow;
+	     color: white;
+	}
+	.orange {
+  	     background-color: orange;
+	     color: white;
+	}
+	.red {
+  	     background-color: red;
+	     color: white;
+	}
+	.white {
+ 	     background-color: white;
+	     color: black;
+	}
+	.brown {
+             background-color: brown;
+             color: white;
+        }
+        .clear {
+             background-color: white;
+             color: black;
+        }
+	
+	.red, .white, .blue,.violet,.indigo,.green,.yellow,.brown,.clear,.pencil,.rectangle,.orange        {
+  		width: 5.2em;
+    		font-weight: bold;
+	
+	.center
+	{
+	float: center;
+	}
+	
+    </style></head>
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas Paint</title>
+    <style type="text/css">
+      #container { position: relative; }
+      #paint { border: 5px solid silver;
+               background:white; 
+			   }
+    </style>
+  </head>
+  <body>
+  <center><table>
+  <tr>
+  <td>
+       <div id="container">
+      <canvas id="paint" width="470" height="510" ></canvas>
+    </div>
+  </td>
+
+
+
+<script type="text/javascript">
+
+//------------------------------------------------------------//
+var canvas, context, tool,size,pen=1 ;
+var drag=false,rect={},rectan=0;
+var circle =0;arc={};radius=0;
+var straight=0; drawl={};
+
+
+function init () {
+    canvas = document.getElementById('paint');
+    context = canvas.getContext('2d');
+    
+    canvas.addEventListener('mousedown', mousepoint, false);
+    canvas.addEventListener('mousemove', mousepoint, false);
+    canvas.addEventListener('mouseup',   mousepoint, false);
+}
+black();
+function size0(){
+	return size=7;
+	}
+function size1(){
+	return size=4;
+	}
+function size2(){
+	return size=1;
+	}
+function black(){
+     tool = new pencil(color='black');
+}
+function violet(){
+     return color='violet';
+}
+function indigo(){
+     return color='indigo';
+}
+function blue(){
+     return color='blue';
+}
+function red(){
+     return color='red';
+}
+function eraser(){
+     tool = new pencil(color='white');
+}
+function green(){
+     return color='green';
+}
+function orange(){
+     return color='orange';
+}
+function yellow(){
+     return color='yellow';
+}
+function brown(){
+     return color='brown';
+}
+//-----------------------------Pencil-----------------------//
+function pencil () {
+    rectan=0;
+	straight=0;
+    pen=1;
+	circle =0;
+    
+    var tool = this;
+    this.started = false;
+    this.mousedown = function (e) {
+        context.beginPath();
+        context.strokeStyle=color;
+        context.lineJoin='round';
+        context.lineWidth=size;
+        context.moveTo(e._x, e._y);
+        tool.started = true;
+	
+    };
+    this.mousemove = function (e) {
+      if (tool.started) {
+        context.lineTo(e._x, e._y);
+        if(pen==1&&rectan==0&&straight==0){
+        context.stroke();
+        }
+      }
+    };
+    this.mouseup = function (e) {
+      if (tool.started) {
+        tool.mousemove(e);
+        tool.started = false;
+      }
+    };
+    
+}
+function mousepoint (e) {
+    if (e.layerX || e.layerX == 0) { 
+      e._x = e.layerX;
+      e._y = e.layerY;
+    } else if (e.offsetX || e.offsetX == 0) { 
+      e._x = e.offsetX;
+      e._y = e.offsetY;
+    }
+    var func = tool[e.type];
+    if (func) {
+      func(e);
+    }
+}
+init();
+//------------------------end of pencil-----------------//
+
+//-----------------Drawing tools--------------------//
+
+// Rectangle//
+function draw() {
+  if(rectan==1){
+  context.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
+ }
+ }
+
+function mouseDownrect(e) {
+  rect.startX = e.layerX - this.offsetLeft;
+  rect.startY = e.layerY - this.offsetTop;
+  drag = true;
+  
+}
+
+function mouseUprect() {
+  
+  draw();
+  rect.w=0;
+  rect.h=0;
+  drag = false;
+}
+
+function mouseMoverect(e) {
+    
+    if(drag==true){
+    rect.w = (e.layerX - this.offsetLeft) - rect.startX;
+    rect.h = (e.layerY - this.offsetTop) - rect.startY ;
+    }
+    
+}
+function rectangle() {
+  color = 'black';
+  rectan=1;
+  straight=0;
+  pen=0;
+  circle=0;
+  canvas.addEventListener('mousedown', mouseDownrect, false);
+  canvas.addEventListener('mouseup', mouseUprect, false);
+  canvas.addEventListener('mousemove', mouseMoverect, false);
+  
+}
+
+//-------------------Straight Line----------------------//
+
+function drawLine(){
+  if(straight==1){
+	context.beginPath();
+      context.moveTo(drawl.startX,drawl.startY);
+      context.lineTo(drawl.w, drawl.h);
+      context.stroke();
+ }
+ }
+
+function mouseDownDraw(e) {
+  drawl.startX = e.layerX - this.offsetLeft;
+  drawl.startY = e.layerY - this.offsetTop;
+  drag = true;
+  
+}
+
+function mouseUpDraw() {
+  
+  drawLine();
+  drawl.w=0;
+  drawl.h=0;
+  drag = false;
+}
+
+function mouseMoveDraw(e) {
+    
+    if(drag==true){
+    drawl.w = (e.layerX - this.offsetLeft) ;
+    drawl.h = (e.layerY - this.offsetTop);
+    }
+    
+}
+function lineDraw() {
+  color = 'black';
+  straight=1;
+  rectan=0;
+  pen=0;
+  circle =0;
+  canvas.addEventListener('mousedown', mouseDownDraw, false);
+  canvas.addEventListener('mouseup', mouseUpDraw, false);
+  canvas.addEventListener('mousemove', mouseMoveDraw, false);
+  
+}
+//------------Circle--------//
+function drawCircle(){
+	 
+		var circumfrence = Math.sqrt( (arc.w-=arc.startX)*arc.w + (arc.h-=arc.startY)*arc.h);
+		var radius= circumfrence;	
+		
+  if(circle==1){
+	  //alert("StartX"+arc.startX + "StartY "+arc.startY+"Radius"+radius);
+context.beginPath();
+context.arc(arc.startX, arc.startY, radius, 0, 2 * Math.PI, false);
+      context.strokeStyle = color;
+      context.stroke();
+      context.lineWidth = 5;
+      
+ }
+ }
+function mouseDownCirc(e) {
+  arc.startX = e.layerX - this.offsetLeft;
+  arc.startY = e.layerY - this.offsetTop;
+  drag = true;
+  
+}
+
+function mouseUpCirc() {
+  drawCircle();
+  arc.w=0;
+  arc.h=0;
+  drag = false;
+
+}
+
+function mouseMoveCirc(e) {
+    
+    if(drag==true){
+    arc.w = (e.layerX - this.offsetLeft) ;
+    arc.h = (e.layerY - this.offsetTop);
+    }
+    
+}
+
+function circleDraw(){
+  color = 'black';
+  circle=1;
+  straight=0;
+  rectan=0;
+  pen=0;
+  canvas.addEventListener('mousedown', mouseDownCirc, false);
+  canvas.addEventListener('mouseup', mouseUpCirc, false);
+  canvas.addEventListener('mousemove', mouseMoveCirc, false);
+  
+}
+ 
+
+//-------------Circle----//
+
+//-----------------End Of Circle---------------------------------------//
+
+ </script>
+  <!--</body>-->
+<td>
+
+<form  method=post>
+<!--<div>-->
+<p><u><b>Choose Tool</b></u></p>
+<div style="float:left;margin-left:40px;background-image: url(static/pencil.jpg); height: 30px; width: 30px; border: 1px solid black;" id = "pencil" onclick ="black()"></div> <center>
+<div style="floatn:right;margin-left:50px;background-image: url(static/eraser.jpg); height: 30px; width: 30px; border: 1px solid black;" id ="eraser" onclick = "eraser()"></div>
+</center></div> 
+<!-- image reference for pencil: http://www.123rf.com/photo_4855213_vector-3d-black-pencil.html-->
+<!-- image reference for eraser: http://slochamber.org/cm/Reoccuring%20Events/AnnualDinner/2013Invite.html-->
+<p> 
+<button type="button" onclick="circleDraw()"class=circle ><i><b>circle</i></b></button>
+<button type="button" onclick="lineDraw()"class=line ><i><b>Line</i></b></button>
+<button type="button" onclick="rectangle()"class=rctan ><i><b>Rectangle</i></b></button>
+</p>
+
+
+
+<a><p><u><b><i>Choose Color</i></b></u></p>
+
+    <p><div style="float:left;margin-left:40px;width:20px;height:20px;background:green;border: solid black 1px" id="green" onclick="green()"></div> <center><div style="floatn:right;margin-left:50px;width:20px;height:20px;background:blue;border: solid black 1px" id="blue" onclick="blue()"></div></center></p>
+    <p><div style="float:left;margin-left:40px;width:20px;height:20px;background:red;border: solid black 1px" id="red" onclick="red()"></div> <center><p><div style="floatn:right;margin-left:50px;width:20px;height:20px;background:yellow;border: solid black 1px" id="yellow" onclick="yellow()"></p></div></center></p>
+    <p><div style="float:left;margin-left:40px;width:20px;height:20px;background:orange;border: solid black 1px" id="orange" onclick="orange()"></div> <center><p><div style="floatn:right;margin-left:50px;width:20px;height:20px;background:black;border: solid black 1px" id="black" onclick="black()"></div></p></center></p>
+    <p><div style="float:left;margin-left:40px;width:20px;height:20px;background:violet;border: solid black 1px" id="violet" onclick="violet()"></div> <center><p><div style="floatn:right;margin-left:50px;width:20px;height:20px;background:indigo;border: solid black 1px" id="indigo" onclick="indigo()"></div></p></center></p>
+</a>
+
+<!--<div>-->
+<p><u><i><b><center>Choose Size</center></i></b></u></p>
+<center><table>
+<tr>
+<td>
+<button type="button" onclick="size0()" class="menu"></button>
+</td>
+<td>
+<button type="button" onclick="size1()" class="menu1"></button>
+</td>
+<td>
+<button type="button" onclick="size2()" class="menu2"></button>
+</td>
+</tr>
+</table></center>
+</br>
+<input type=button value="Clear All" onClick="history.go()">
+</div>
+</form>
+</div>
+</div>
+</table>
+
+</body>
+</html>
+
